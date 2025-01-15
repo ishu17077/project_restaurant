@@ -127,8 +127,9 @@ func UpdateMenu() gin.HandlerFunc {
 				msg := "Menu update failed"
 				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 				defer cancel()
+				return
 			}
-
+			
 			c.JSON(http.StatusOK, result)
 		}
 
