@@ -106,11 +106,11 @@ func UpdateMenu() gin.HandlerFunc {
 			updateObj = append(updateObj, bson.E{Key: "start_date", Value: menu.Start_Date})
 			updateObj = append(updateObj, bson.E{Key: "end_date", Value: menu.End_Date})
 
-			if menu.Name != "" {
+			if menu.Name != "" && &menu.Name != nil {
 				updateObj = append(updateObj, bson.E{Key: "name", Value: menu.Name})
 
 			}
-			if menu.Catergory != "" {
+			if menu.Catergory != "" && &menu.Catergory != nil{
 				updateObj = append(updateObj, bson.E{Key: "category", Value: menu.Catergory})
 			}
 			menu.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
@@ -129,7 +129,7 @@ func UpdateMenu() gin.HandlerFunc {
 				defer cancel()
 				return
 			}
-			
+
 			c.JSON(http.StatusOK, result)
 		}
 

@@ -10,6 +10,7 @@ import (
 	"project_restaurant/models"
 	"strconv"
 	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
@@ -135,14 +136,14 @@ func UpdateFood() gin.HandlerFunc {
 			updateObj = append(updateObj, bson.E{Key: "price", Value: food.Price})
 		}
 
-		if food.Food_image != nil {
+		if food.Food_image != nil && *food.Food_image != "" {
 			updateObj = append(updateObj, bson.E{Key: "food_image", Value: food.Food_image})
 		}
-		if food.Menu_id != "" {
-			err:= menuCollection.FindOne(ctx, bson.M{"menu_id": food.Menu_id}).Decode(&menu)
+		if food.Menu_id != "" && &food.Menu_id != nil {
+			err := menuCollection.FindOne(ctx, bson.M{"menu_id": food.Menu_id}).Decode(&menu)
 			defer cancel()
-			if err != nil{
-				msg:= fmt.Sprint("menu not found")
+			if err != nil {
+				msg := fmt.Sprint("menu not found")
 				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 				return
 			}
@@ -174,5 +175,5 @@ func round(num float64) int {
 
 func toFixed(num float64, precision int) float64 {
 	output := math.Pow10(precision)
-	return float64(round(num*output))
+	return float64(round(num * output))
 }
