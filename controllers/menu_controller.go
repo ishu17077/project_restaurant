@@ -29,6 +29,7 @@ func GetMenus() gin.HandlerFunc {
 		var allMenus []bson.M
 		if err = result.All(ctx, &allMenus); err != nil {
 			log.Fatal(err)
+			return
 		}
 		c.JSON(http.StatusOK, allMenus)
 	}
