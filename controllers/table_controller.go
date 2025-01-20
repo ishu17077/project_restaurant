@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"project_restaurant/database"
-
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -10,7 +9,9 @@ import (
 var tableCollection *mongo.Collection = database.OpenCollection(database.Client, "table")
 
 func GetTables() gin.HandlerFunc {
-	return func(c *gin.Context) {}
+	return func(c *gin.Context) {
+		
+	}
 }
 
 func GetTable() gin.HandlerFunc {

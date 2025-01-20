@@ -51,6 +51,7 @@ func CreateOrder() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var ctx, cancel = context.WithTimeout(context.TODO(), 100*time.Second)
 		var order models.Order
+		var table models.Table
 		if err := c.BindJSON(&order); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -62,7 +63,7 @@ func CreateOrder() gin.HandlerFunc {
 			return
 		}
 		if &order.Table_id != nil && order.Table_id != "" {
-			err := tableCollection.FindOne(ctx, bson.M{"table_id": order.Table_id})
+			err := tableCollection.FindOne(ctx, bson.M{"table_id": order.Table_id}).Decode(&table)
 			defer cancel()
 			if err != nil {
 				msg := fmt.Sprint("Table not found")
