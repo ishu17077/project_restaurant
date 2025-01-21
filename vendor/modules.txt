@@ -46,8 +46,6 @@ github.com/cloudwego/base64x/internal/native
 github.com/cloudwego/base64x/internal/native/avx2
 github.com/cloudwego/base64x/internal/native/sse
 github.com/cloudwego/base64x/internal/rt
-# github.com/cloudwego/iasm v0.2.0
-## explicit; go 1.16
 # github.com/gabriel-vasile/mimetype v1.4.8
 ## explicit; go 1.20
 github.com/gabriel-vasile/mimetype
@@ -214,6 +212,8 @@ go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage
 golang.org/x/arch/x86/x86asm
 # golang.org/x/crypto v0.32.0
 ## explicit; go 1.20
+golang.org/x/crypto/bcrypt
+golang.org/x/crypto/blowfish
 golang.org/x/crypto/ocsp
 golang.org/x/crypto/pbkdf2
 golang.org/x/crypto/scrypt
