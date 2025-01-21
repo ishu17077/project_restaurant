@@ -182,9 +182,20 @@ func Login() gin.HandlerFunc {
 }
 
 func HashPassword(password string) string {
-	bcrypt.CompareHashAndPassword()
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	if err != nil {
+		log.Panic(err)
+	}
+	return string(bytes)
 }
 
 func verifyPassword(userPassword string, providedPassword string) (bool, string) {
-
+	err := bcrypt.CompareHashAndPassword([]byte(userPassword), []byte(providedPassword))
+	check := false
+	msg := "Password Incorrect"
+	if err == nil {
+		check = true
+		msg = fmt.Sprintf("Login Success!")
+	}
+	return check, msg
 }
