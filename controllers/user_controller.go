@@ -18,7 +18,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var userCollection *mongo.Collection = database.OpenCollection(database.Client, "users")
+var userCollection *mongo.Collection = database.OpenCollection(database.Client, "user")
 
 func GetUsers() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -130,7 +130,7 @@ func SignUp() gin.HandlerFunc {
 
 		//* generate token and refresh tokens (generate all tokens from helper)
 
-		token, refeshToken, _ := helpers.GenerateAllTokens(*user.Email, *user.First_name, *user.Last_name, *user.User_id)
+		token, refeshToken, _ := helpers.GenerateAllTokens(*user.Email, *user.First_name, *user.Last_name, user.User_id)
 		user.Token = &token
 		user.Refresh_Token = &refeshToken
 		//* if all okay, insert this new user to user collection
@@ -153,6 +153,7 @@ func Login() gin.HandlerFunc {
 		//* Convert the Login JSON data coming from postman to something go lang would understand
 		if err := c.BindJSON(&user); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+			defer cancel()
 			return
 		}
 		//* find a user with that email and check if exist

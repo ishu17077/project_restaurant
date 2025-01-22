@@ -85,6 +85,7 @@ func CreateInvoice() gin.HandlerFunc {
 		var ctx, cancel = context.WithTimeout(context.TODO(), 100*time.Second)
 		var invoice models.Invoice
 		if err := c.BindJSON(&invoice); err != nil {
+			defer cancel()
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -93,6 +94,7 @@ func CreateInvoice() gin.HandlerFunc {
 		defer cancel()
 		if err != nil {
 			msg := fmt.Sprintf("message: Order not found")
+			defer cancel()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 		}
 		if invoice.Payment_status == nil {
@@ -129,6 +131,7 @@ func UpdateInvoice() gin.HandlerFunc {
 		invoiceId := c.Param("invoide_id")
 		if err := c.BindJSON(&invoice); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			defer cancel()
 			return
 		}
 
@@ -157,6 +160,7 @@ func UpdateInvoice() gin.HandlerFunc {
 		if err != nil {
 			msg := fmt.Sprint("Error updating invoice")
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+			defer cancel()
 			return
 		}
 		defer cancel()

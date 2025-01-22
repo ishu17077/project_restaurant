@@ -54,12 +54,14 @@ func CreateOrder() gin.HandlerFunc {
 		var table models.Table
 		if err := c.BindJSON(&order); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			defer cancel()
 			return
 		}
 		validationErr := validate.Struct(&order)
 		defer cancel()
 		if validationErr != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
+			defer cancel()
 			return
 		}
 		if &order.Table_id != nil && order.Table_id != "" {

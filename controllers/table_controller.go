@@ -7,6 +7,7 @@ import (
 	"project_restaurant/database"
 	"project_restaurant/models"
 	"time"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -42,6 +43,7 @@ func GetTable() gin.HandlerFunc {
 		err := tableCollection.FindOne(ctx, bson.M{"table_id": tableId}).Decode(&table)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while getting that table"})
+			defer cancel()
 			return
 		}
 		defer cancel()

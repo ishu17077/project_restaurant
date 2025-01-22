@@ -56,11 +56,13 @@ func CreateMenu() gin.HandlerFunc {
 		var menu models.Menu
 		if err := c.BindJSON(&menu); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			defer cancel()
 			return
 		}
 		validationErr := validate.Struct(&menu)
 		if validationErr != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
+			defer cancel()
 			return
 		}
 		defer cancel()
@@ -73,6 +75,8 @@ func CreateMenu() gin.HandlerFunc {
 		if insertErr != nil {
 			msg := fmt.Sprintf("Menu Item was not created")
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+			defer cancel()
+			return
 
 		}
 		defer cancel()
@@ -88,6 +92,7 @@ func UpdateMenu() gin.HandlerFunc {
 		var menu models.Menu
 		if err := c.BindJSON(&menu); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			defer cancel()
 			return
 		}
 
@@ -132,7 +137,9 @@ func UpdateMenu() gin.HandlerFunc {
 			}
 
 			c.JSON(http.StatusOK, result)
+			defer cancel()
 		}
+		defer cancel()
 
 	}
 }

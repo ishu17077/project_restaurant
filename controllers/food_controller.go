@@ -87,6 +87,7 @@ func CreateFood() gin.HandlerFunc {
 		var menu models.Menu
 		var food models.Food
 		if err := c.BindJSON(&food); err != nil {
+			defer cancel()
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -94,12 +95,14 @@ func CreateFood() gin.HandlerFunc {
 		validationErr := validate.Struct(&food)
 		if validationErr != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
+			defer cancel()
 			return
 		}
 		err := menuCollection.FindOne(ctx, bson.M{"menu_id": food.Menu_id}).Decode(&menu)
 		defer cancel()
 		if err != nil {
 			msg := fmt.Sprint("Menu was not found")
+			defer cancel()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 			return
 		}
@@ -112,6 +115,7 @@ func CreateFood() gin.HandlerFunc {
 		result, insertErr := foodCollection.InsertOne(ctx, food)
 		if insertErr != nil {
 			msg := fmt.Sprintf("Food Item was not created")
+			defer cancel()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 			return
 		}
@@ -130,6 +134,7 @@ func UpdateFood() gin.HandlerFunc {
 
 		if err := c.BindJSON(&food); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			defer cancel()
 			return
 		}
 		var updateObj primitive.D
@@ -144,7 +149,7 @@ func UpdateFood() gin.HandlerFunc {
 		if food.Food_image != nil && *food.Food_image != "" {
 			updateObj = append(updateObj, bson.E{Key: "food_image", Value: food.Food_image})
 		}
-		if food.Menu_id != "" && &food.Menu_id != nil {
+		if food.Menu_id != "" && &(food.Menu_id) != nil {
 			err := menuCollection.FindOne(ctx, bson.M{"menu_id": food.Menu_id}).Decode(&menu)
 			defer cancel()
 			if err != nil {
@@ -168,12 +173,13 @@ func UpdateFood() gin.HandlerFunc {
 		if err != nil {
 			msg := fmt.Sprint("food item update failed")
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+			defer cancel()
 			return
 		}
+		defer cancel()
 		c.JSON(http.StatusOK, result)
 	}
 }
-
 func round(num float64) int {
 	return int(num + math.Copysign(0.5, num))
 }
